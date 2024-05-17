@@ -1,0 +1,43 @@
+﻿@page "/"
+@using System.Globalization
+
+
+<h1>@Resources.Resource1.HelloWorld</h1>
+
+
+<strong>Culture:</strong>
+<select @bind="Culture">
+    @foreach (var culture in cultures)
+    {
+        <option value="@culture">@culture.DisplayName</option>
+    }
+</select>
+
+<FluentSelect 
+    Items="@cultures" 
+    @bind-SelectedOption="Culture">
+</FluentSelect>
+
+@code
+{
+    CultureInfo[] cultures = new[]
+    {
+        new CultureInfo("en-GB"), // Only breaks on en-GB - en-US works fine
+        new CultureInfo("pl-PL")
+    };
+
+    CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                Thread.CurrentThread.CurrentCulture = value;
+                Thread.CurrentThread.CurrentUICulture = value;
+                CultureInfo.DefaultThreadCurrentCulture = value;
+                CultureInfo.DefaultThreadCurrentUICulture = value;
+            }
+        }
+    }
+}
